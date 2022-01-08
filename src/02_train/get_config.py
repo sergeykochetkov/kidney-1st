@@ -10,7 +10,7 @@ def get_config():
         'FOLD_LIST':[0,1,2,3],
         'VERSION':VERSION,
         'OUTPUT_PATH':f'./result/{VERSION}/',
-        'INPUT_PATH':'/mnt/750G/GIT/Kidney/data',
+        'INPUT_PATH':'../../input',
         
         'train_data_path_list':[
             '../01_data_preparation/01_01/result/01_01/', 
@@ -35,8 +35,8 @@ def get_config():
         'clf_threshold':None,
         
         'tta':1,
-        'trn_batch_size':8,
-        'test_batch_size':8,
+        'trn_batch_size':16,
+        'test_batch_size':16,
         'Adam':{
             'lr':1e-4,
             'betas':(0.9, 0.999),

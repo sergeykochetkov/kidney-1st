@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+spawn aws configure
+
+expect "*AWS Access Key ID*"
+send -- "AKIAV7AY444QSKWVBMOI\r"
+expect "*AWS Secret Access Key*"
+send -- "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\r"
+expect "*Default region name*"
+send -- "us-west-1\r"
+expect "*Default output format*"
+send -- "\r"
+expect eof
