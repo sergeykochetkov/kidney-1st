@@ -1,0 +1,6 @@
+input
+.idea
+src/01_data_preparation/01_01/result
+src/01_data_preparation/01_02/result
+src/02_train/result
+src/02_train/__pycache__
