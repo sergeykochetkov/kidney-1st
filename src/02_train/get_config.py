@@ -35,7 +35,7 @@ def get_config():
         'clf_threshold':None,
         
         'tta':1,
-        'trn_batch_size':16,
+        'trn_batch_size':8,
         'test_batch_size':16,
         'Adam':{
             'lr':1e-4,
@@ -87,7 +87,7 @@ def get_config():
         'patience':50,
 
         #'FP16':True, always True
-        'num_workers':4,
+        'num_workers':8,
         'device':torch.device("cuda" if torch.cuda.is_available() else "cpu"),
     }
     return config
