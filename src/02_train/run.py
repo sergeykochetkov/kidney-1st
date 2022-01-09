@@ -12,8 +12,6 @@ from dataset import HuBMAPDatasetTrain
 from models import build_model
 from scheduler import CosineLR
 from utils import elapsed_time
-from lovasz_loss import lovasz_hinge
-from losses import criterion_lovasz_hinge_non_empty
 from metrics import dice_sum, dice_sum_2
 from get_config import get_config
 config = get_config()
@@ -116,7 +114,7 @@ def run(seed, data_df, pseudo_df, trn_idxs_list, val_idxs_list):
                 trn_df_list.append(trn_df_1[trn_df_1['binned']==bin_size].sample(n_bin, replace=True))
             trn_df_1 = pd.concat(trn_df_list, axis=0)
             trn_df_balanced = pd.concat([trn_df_1, trn_df_0], axis=0).reset_index(drop=True)
-            train_dataset = HuBMAPDatasetTrain(trn_df, config, mode='train')
+            train_dataset = HuBMAPDatasetTrain(trn_df_balanced, config, mode='train')
             train_loader  = DataLoader(train_dataset, batch_size=config['trn_batch_size'],
                                        shuffle=True, num_workers=4, pin_memory=True, drop_last=True)
             model.train()
@@ -149,10 +147,10 @@ def run(seed, data_df, pseudo_df, trn_idxs_list, val_idxs_list):
                     trn_score_numer += dice_numer 
                     trn_score_denom += dice_denom
                     loss = criterion(logits,y_true)
-                    loss += lovasz_hinge(logits.view(-1,h,w), y_true.view(-1,h,w))
+
                     if config['deepsupervision']:
                         for logits_deep in logits_deeps:
-                            loss += 0.1 * criterion_lovasz_hinge_non_empty(criterion, logits_deep, y_true)
+                            loss += 0.1 * criterion(logits_deep, y_true)
                     if config['clfhead']:
                         loss += criterion_clf(logits_clf.squeeze(-1),y_clf)
                 scaler.scale(loss).backward()
