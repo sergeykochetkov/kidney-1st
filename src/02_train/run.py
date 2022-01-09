@@ -200,10 +200,9 @@ def run(seed, data_df, pseudo_df, trn_idxs_list, val_idxs_list):
                     val_score_numer += dice_numer 
                     val_score_denom += dice_denom
                     loss_val += criterion(logits,y_true).item() * batch
-                    loss_val += lovasz_hinge(logits.view(-1,h,w), y_true.view(-1,h,w)).item() * batch
                     if config['deepsupervision']:
                         for logits_deep in logits_deeps:
-                            loss_val += 0.1 * criterion_lovasz_hinge_non_empty(criterion, logits_deep, y_true).item() * batch
+                            loss_val += 0.1 * criterion(logits_deep, y_true).item() * batch
                     if config['clfhead']:
                         loss_val += criterion_clf(logits_clf.squeeze(-1), y_clf).item() * batch
                 #release GPU memory cache
