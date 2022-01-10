@@ -8,6 +8,7 @@ USER_SERVER=${2:-root@ssh4.vast.ai}
 
 GIT_USERNAME=sergeykochetkov
 GIT_PAT=${3:-no_pat}
+GIT_BRANCH=feature_dice_instead_lovazsh #main
 
 EXPERIMENT_NAME=${4:-default}
 
@@ -35,7 +36,7 @@ $SSH "wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 $SSH " bash ~/miniconda.sh -u -b -p $REMOTE_HOME/miniconda && ${CA} && conda init bash"  &&
 
-$SSH "git clone https://${GIT_USERNAME}:${GIT_PAT}@github.com/sergeykochetkov/kidney-1st.git ${REPO_DIR}" &&
+$SSH "git clone -b ${GIT_BRANCH} https://${GIT_USERNAME}:${GIT_PAT}@github.com/sergeykochetkov/kidney-1st.git ${REPO_DIR}" &&
 
 $SSH "$CA && conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge -y" &&
 
