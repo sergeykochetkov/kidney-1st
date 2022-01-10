@@ -126,6 +126,7 @@ class DecodeBlock(nn.Module):
         x += self.conv1x1(self.upsample(inputs))  # shortcut
         return x
 
+fpn_dim=128
 
 # U-Net SeResNext101 + CBAM + hypercolumns + deepsupervision
 class UNET_SERESNEXT101(nn.Module):
@@ -160,11 +161,11 @@ class UNET_SERESNEXT101(nn.Module):
         self.center = CenterBlock(2048, 512)  # ->(*,512,h/32,w/32)
 
         # decoder
-        self.decoder4 = DecodeBlock(512, 2048, 64, upsample=True)  # ->(*,64,h/16,w/16)
-        self.decoder3 = DecodeBlock(64, 1024, 64, upsample=True)  # ->(*,64,h/8,w/8)
-        self.decoder2 = DecodeBlock(64, 512, 64, upsample=True)  # ->(*,64,h/4,w/4)
-        self.decoder1 = DecodeBlock(64, 256, 64, upsample=True)  # ->(*,64,h/2,w/2)
-        self.decoder0 = DecodeBlock(64, None, 64, upsample=True)  # ->(*,64,h,w)
+        self.decoder4 = DecodeBlock(512, 2048, fpn_dim, upsample=True)  # ->(*,fpn_dim,h/16,w/16)
+        self.decoder3 = DecodeBlock(fpn_dim, 1024, fpn_dim, upsample=True)  # ->(*,fpn_dim,h/8,w/8)
+        self.decoder2 = DecodeBlock(fpn_dim, 512, fpn_dim, upsample=True)  # ->(*,fpn_dim,h/4,w/4)
+        self.decoder1 = DecodeBlock(fpn_dim, 256, fpn_dim, upsample=True)  # ->(*,fpn_dim,h/2,w/2)
+        self.decoder0 = DecodeBlock(fpn_dim, None, fpn_dim, upsample=True)  # ->(*,fpn_dim,h,w)
 
         # upsample
         self.upsample4 = nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True)
@@ -173,16 +174,16 @@ class UNET_SERESNEXT101(nn.Module):
         self.upsample1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
 
         # deep supervision
-        self.deep4 = conv1x1(64, 1).apply(init_weight)
-        self.deep3 = conv1x1(64, 1).apply(init_weight)
-        self.deep2 = conv1x1(64, 1).apply(init_weight)
-        self.deep1 = conv1x1(64, 1).apply(init_weight)
+        self.deep4 = conv1x1(fpn_dim, 1).apply(init_weight)
+        self.deep3 = conv1x1(fpn_dim, 1).apply(init_weight)
+        self.deep2 = conv1x1(fpn_dim, 1).apply(init_weight)
+        self.deep1 = conv1x1(fpn_dim, 1).apply(init_weight)
 
         # final conv
         self.final_conv = nn.Sequential(
-            conv3x3(320, 64).apply(init_weight),
+            conv3x3(5*fpn_dim, fpn_dim).apply(init_weight),
             nn.ELU(True),
-            conv1x1(64, 1).apply(init_weight)
+            conv1x1(fpn_dim, 1).apply(init_weight)
         )
 
         # clf head
@@ -197,7 +198,7 @@ class UNET_SERESNEXT101(nn.Module):
 
     def forward(self, inputs):
         # encoder
-        x0 = self.encoder0(inputs)  # ->(*,64,h/2,w/2)
+        x0 = self.encoder0(inputs)  # ->(*,fpn_dim,h/2,w/2)
         x1 = self.encoder1(x0)  # ->(*,256,h/4,w/4)
         x2 = self.encoder2(x1)  # ->(*,512,h/8,w/8)
         x3 = self.encoder3(x2)  # ->(*,1024,h/16,w/16)
@@ -224,17 +225,17 @@ class UNET_SERESNEXT101(nn.Module):
         y5 = self.center(x4)  # ->(*,320,h/32,w/32)
 
         # decoder
-        y4 = self.decoder4(y5, x4)  # ->(*,64,h/16,w/16)
-        y3 = self.decoder3(y4, x3)  # ->(*,64,h/8,w/8)
-        y2 = self.decoder2(y3, x2)  # ->(*,64,h/4,w/4)
-        y1 = self.decoder1(y2, x1)  # ->(*,64,h/2,w/2)
-        y0 = self.decoder0(y1, None)  # ->(*,64,h,w)
+        y4 = self.decoder4(y5, x4)  # ->(*,fpn_dim,h/16,w/16)
+        y3 = self.decoder3(y4, x3)  # ->(*,fpn_dim,h/8,w/8)
+        y2 = self.decoder2(y3, x2)  # ->(*,fpn_dim,h/4,w/4)
+        y1 = self.decoder1(y2, x1)  # ->(*,fpn_dim,h/2,w/2)
+        y0 = self.decoder0(y1, None)  # ->(*,fpn_dim,h,w)
 
         # hypercolumns
-        y4 = self.upsample4(y4)  # ->(*,64,h,w)
-        y3 = self.upsample3(y3)  # ->(*,64,h,w)
-        y2 = self.upsample2(y2)  # ->(*,64,h,w)
-        y1 = self.upsample1(y1)  # ->(*,64,h,w)
+        y4 = self.upsample4(y4)  # ->(*,fpn_dim,h,w)
+        y3 = self.upsample3(y3)  # ->(*,fpn_dim,h,w)
+        y2 = self.upsample2(y2)  # ->(*,fpn_dim,h,w)
+        y1 = self.upsample1(y1)  # ->(*,fpn_dim,h,w)
         hypercol = torch.cat([y0, y1, y2, y3, y4], dim=1)
 
         # final conv

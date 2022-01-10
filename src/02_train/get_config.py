@@ -35,7 +35,7 @@ def get_config():
         'clf_threshold':None,
         
         'tta':1,
-        'trn_batch_size':8,
+        'trn_batch_size':16,
         'test_batch_size':16,
         'Adam':{
             'lr':1e-4,
