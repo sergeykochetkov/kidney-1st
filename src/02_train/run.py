@@ -116,7 +116,7 @@ def run(seed, data_df, pseudo_df, trn_idxs_list, val_idxs_list):
                 trn_df_list.append(trn_df_1[trn_df_1['binned']==bin_size].sample(n_bin, replace=True))
             trn_df_1 = pd.concat(trn_df_list, axis=0)
             trn_df_balanced = pd.concat([trn_df_1, trn_df_0], axis=0).reset_index(drop=True)
-            train_dataset = HuBMAPDatasetTrain(trn_df, config, mode='train')
+            train_dataset = HuBMAPDatasetTrain(trn_df_balanced, config, mode='train')
             train_loader  = DataLoader(train_dataset, batch_size=config['trn_batch_size'],
                                        shuffle=True, num_workers=4, pin_memory=True, drop_last=True)
             model.train()
@@ -202,7 +202,6 @@ def run(seed, data_df, pseudo_df, trn_idxs_list, val_idxs_list):
                     val_score_numer += dice_numer 
                     val_score_denom += dice_denom
                     loss_val += criterion(logits,y_true).item() * batch
-
                     if config['deepsupervision']:
                         for logits_deep in logits_deeps:
                             loss_val += 0.1 * criterion(logits_deep, y_true).item() * batch
