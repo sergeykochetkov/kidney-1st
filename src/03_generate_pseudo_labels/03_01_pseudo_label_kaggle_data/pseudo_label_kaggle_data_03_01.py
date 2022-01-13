@@ -57,7 +57,7 @@ if __name__=='__main__':
             model.load_state_dict(torch.load(path))
             model.eval()
             model_list[seed].append(model) 
-    
+    '''
     # pseudo-label for train data
     train_df['predicted'] = None
     for idx in range(len(train_df)): 
@@ -66,6 +66,7 @@ if __name__=='__main__':
         rle = get_rle(pred_mask,h,w)
         train_df.loc[idx,'predicted'] = rle
     train_df.to_csv(opj(OUTPUT_PATH, 'pseudo_train.csv'), index=False)
+    '''
     
     # pseudo-label for test data
     for idx in range(len(sub_df)): 
@@ -73,4 +74,4 @@ if __name__=='__main__':
         pred_mask,h,w = get_pred_mask(idx, sub_df, model_list, mode='test')
         rle = get_rle(pred_mask,h,w)
         sub_df.loc[idx,'predicted'] = rle
-    sub_df.to_csv(opj(OUTPUT_PATH, 'pseudo_test.csv'), index=False)
+        sub_df.to_csv(opj(OUTPUT_PATH, 'pseudo_test.csv'), index=False)

@@ -72,4 +72,4 @@ if __name__=='__main__':
         pred_mask,h,w = get_pred_mask_external(idx, filenames, model_list)
         rle = get_rle(pred_mask,h,w)
         external_df.loc[idx,'predicted'] = rle
-    external_df.to_csv(opj(OUTPUT_PATH, 'hubmap-external.csv'), index=False)
+        external_df.to_csv(opj(OUTPUT_PATH, 'hubmap-external.csv'), index=False)

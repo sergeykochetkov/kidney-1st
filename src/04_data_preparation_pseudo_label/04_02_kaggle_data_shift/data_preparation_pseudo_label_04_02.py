@@ -24,7 +24,7 @@ def get_config():
     config = {
         'VERSION':VERSION,
         'OUTPUT_PATH':f'./result/{VERSION}/',
-        'INPUT_PATH':'../../../input/hubmap-kidney-segmentation/',
+        'INPUT_PATH':'/mnt/750G/GIT/Kidney/data',
         'pseudo_label_path_train':'../../03_generate_pseudo_labels/03_01_pseudo_label_kaggle_data/result/03_01/pseudo_train.csv',
         'pseudo_label_path_test':'../../03_generate_pseudo_labels/03_01_pseudo_label_kaggle_data/result/03_01/pseudo_test.csv',
         'device':torch.device("cuda" if torch.cuda.is_available() else "cpu"),

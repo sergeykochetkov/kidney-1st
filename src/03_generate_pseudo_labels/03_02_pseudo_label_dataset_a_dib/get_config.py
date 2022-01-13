@@ -5,14 +5,14 @@ VERSION = '03_02'
 def get_config():
     config = {
         'VERSION':VERSION,
+        'INPUT_PATH':'/mnt/750G/GIT/Kidney/data',
         'OUTPUT_PATH':f'./result/{VERSION}/',
-        'INPUT_PATH':'../../../input/hubmap-kidney-segmentation/',
-        'external_data_path':'../../../input/dataset_a_dib/',
+        'external_data_path': '/mnt/750G/GIT/kidny_unlabeled_dib/DATASET_A_DIB',
         'split_seed_list':[0],
-        'FOLD_LIST':[0,1,2,3], 
-        'model_path':'../../02_train/result/02/',
+        'FOLD_LIST':[0,1,2,3],
+        'model_path':'../../02_train/result/01/',
         'model_name':'seresnext101',
-        'val_idxs_list_path':'../../02_train/result/02/',
+        'val_idxs_list_path':'../../02_train/result/01/',
 
         'num_classes':1,
         'resolution':1024,

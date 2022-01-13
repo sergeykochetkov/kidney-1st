@@ -24,7 +24,7 @@ def get_config():
     config = {
         'VERSION':VERSION,
         'OUTPUT_PATH':f'./result/{VERSION}/',
-        'INPUT_PATH':'../../../input/hubmap-kidney-segmentation/',
+        'INPUT_PATH':'/mnt/750G/GIT/Kidney/data',
         'pseudo_label_path':'../../../input/d48_hand_labelled.csv',
         'device':torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         'tile_size':1024,
