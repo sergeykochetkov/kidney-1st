@@ -8,7 +8,7 @@ VERSION = '05'
 def get_config():
     config = {
         'split_seed_list': [0],
-        'FOLD_LIST': [ 1 ],
+        'FOLD_LIST': [ 2 ],
         'VERSION': VERSION,
         'OUTPUT_PATH': f'./result/{VERSION}/',
         'INPUT_PATH': '../../input/',
@@ -52,7 +52,7 @@ def get_config():
         'pad_size': 256,
 
         'tta': 1,
-        'trn_batch_size': 24,
+        'trn_batch_size': 20,
         'test_batch_size': 16,
 
         'Adam': {
