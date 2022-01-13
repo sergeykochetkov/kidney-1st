@@ -52,7 +52,7 @@ def get_config():
         'pad_size': 256,
 
         'tta': 1,
-        'trn_batch_size': 8,
+        'trn_batch_size': 24,
         'test_batch_size': 16,
 
         'Adam': {
