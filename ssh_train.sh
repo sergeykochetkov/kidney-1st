@@ -53,6 +53,12 @@ $SSH "cd ${REPO_DIR}/src/01_data_preparation/01_01 && aws s3 cp s3://kochetkov-k
 
 $SSH "cd ${REPO_DIR}/src/01_data_preparation/01_02 && aws s3 cp s3://kochetkov-kidney/kidney-1st/resutl_01_02/01_02/ result/01_02 --recursive" &&
 
+$SSH "cd ${REPO_DIR} && for d in src/04_data_preparation_pseudo_label/04_01_kaggle_data/result/04_01/ src/04_data_preparation_pseudo_label/04_02_kaggle_data_shift/result/04_02/ src/04_data_preparation_pseudo_label/04_03_dataset_a_dib/result/04_03/ src/04_data_preparation_pseudo_label/04_05_hubmap_external/result/04_05/ src/04_data_preparation_pseudo_label/04_06_hubmap_external_shift/result/04_06/ src/04_data_preparation_pseudo_label/04_07_carno_zhao_label/result/04_07/ src/04_data_preparation_pseudo_label/04_08_carno_zhao_label_shift/result/04_08/
+do
+  b=$(basename $d)
+  aws s3 cp s3://kochetkov-kidney/kidney-1st/$b $d --recursive
+done"
+
 $SSH "$CA && cd ${REPO_DIR}/src/pretrained-models.pytorch-master && pip install -e . "
 
 else
