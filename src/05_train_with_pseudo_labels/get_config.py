@@ -8,7 +8,7 @@ VERSION = '05'
 def get_config():
     config = {
         'split_seed_list': [0],
-        'FOLD_LIST': [ 1, 2, 3],
+        'FOLD_LIST': [ 1 ],
         'VERSION': VERSION,
         'OUTPUT_PATH': f'./result/{VERSION}/',
         'INPUT_PATH': '../../input/',
